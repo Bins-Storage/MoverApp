@@ -1,6 +1,9 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
+/*
+ * Deprecated.
+ */ 
 export default SectionHeader = (props) => {
     return (
         <View style={{borderBottomWidth: 5}}>

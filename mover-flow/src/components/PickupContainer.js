@@ -8,8 +8,8 @@ export default class PickupContainer extends React.Component {
 
         this.state = {
             boxList: [],
-            name: this.props.name,
-            streetAddress: this.props.streetAddress,
+            name: this.props.name,  // deprecated?
+            streetAddress: this.props.streetAddress, // deprecated?
         }
     }
 
@@ -41,8 +41,6 @@ export default class PickupContainer extends React.Component {
         }
     }
 
-    // should be own component
-    // idea: use rn elements listitem
     renderBoxItem = ({ item }) => {
         return (
             <ListItem>
@@ -75,11 +73,8 @@ export default class PickupContainer extends React.Component {
             },
             body: JSON.stringify(this.state)
         })
-            //.catch(err => {console.log(err)})
+        .catch(err => {console.log(err)})
 
-        // send the box data to the google sheet
-        //UNCOMMENT TO LOOK AT ROUTE.PARAMS DATA console.log(this.props.route.params)
-        // NOTE: ALSO GOING TO NEED TO COMMENT OUT RETURN STATEMENT
     }
 
     keyExtractor = (item, index) => index.toString();

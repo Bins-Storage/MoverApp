@@ -6,15 +6,18 @@ export default class JobList extends React.Component {
     constructor(props) {
         super(props);
 
+        // an array of user data containing user objects 
         this.state = {
             userData: [],
         }
     };
 
+    // pull randomly generated data from the RandomUserAPI to populate the JobList
     componentDidMount() {
         this.getRemoteData();
     }
 
+    // helper func: randomly decides if a job is pickup
     isPickup = () => {
         let randValue = Math.floor(Math.random() * 2);
         
@@ -22,7 +25,13 @@ export default class JobList extends React.Component {
         else { return false; }
     }
 
-    // processes the response array from the RandomUser api
+    /*
+     * Processes the response array from the RandomUser api to extract only the following info:
+     * email, name, phone, pictureUrl, streetAddress. A pickup/delivery job type is randomly generated.
+     * 
+     * @param {array} userArray An array of RandomUsers to parse
+     * @return {array} Filtered RandomUser data
+     */ 
     processUserArray = (userArray) => {
         let userData = [];
 
@@ -42,7 +51,14 @@ export default class JobList extends React.Component {
         return userData;
     }
 
-    // sort out the pickups, SIDE EFFECT: sets state
+    /*
+     * Sorts input array by pickup + delivery, inputting all pickup/delivery jobs into respective
+     * pickup/delivery list objects. Sets state to be an array of these two objects. This state is what is rendered
+     * in the section list.
+     * 
+     * @param {array} userJobs A filtered array of user objects 
+     * Side Effect: Sets userData in this.state
+     */ 
     sortPickupsAndDeliveries = (userJobs) => {
         let pickupList = { title: 'Pickups', data: []};
         let deliveryList = { title: 'Deliveries', data: []};
@@ -58,6 +74,7 @@ export default class JobList extends React.Component {
     }
 
     // extracts 10 random users for the SectionList
+    // populates state data with User, Addres, Profile Pic, Email
     getRemoteData = () => {
         const url = 'https://randomuser.me/api/?inc=name,location,email,phone,picture&results=10&nat=us';
         fetch(url, {
@@ -82,6 +99,13 @@ export default class JobList extends React.Component {
 
     keyExtractor = (item, index) => index.toString();
 
+    /*
+     * Creates a pressable list item for the JobList, including the following:
+     * Profile Pic; Tenant Name; Tenant Address
+     *
+     * @param {object with item property} item An item which maps to a user object
+     * @return ListItem with user object info nested inside
+     */ 
     renderItem = ({ item }) => (
         <ListItem onPress={() => {
             this.props.navigation.navigate('Job Screen', {...item});

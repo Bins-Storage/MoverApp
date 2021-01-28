@@ -16,10 +16,16 @@ export default class JobScreen extends React.Component {
         };
     };
 
+    /*
+     * Receives the tenant's info from the JobList ListItem.
+     */
     componentDidMount() {
         this.setState({ userInfo: {...this.props.route.params} })
     }
 
+    /*
+     * Returns a component which acts as a container for the associated Pickup/Delivery job
+     */
     checkJobType = () => {
         if (this.state.userInfo.title === 'pickup') {
             return <PickupContainer navigation={this.props.navigation} route={this.props.route} name={this.props.route.params.name} streetAddress={this.props.route.params.streetAddress}/>
@@ -28,6 +34,11 @@ export default class JobScreen extends React.Component {
         }
     }
 
+    /*
+     * Renders a header with the user's name and the user's address, and the appropriate job-type container
+     * The container will re-render when scanning is done since ScannerHandler will pass a new route.params to JobScreen.
+     * This has the side-effect of changing the container component's props, forcing a re-render
+     */
     render() {
         return (
             <View>

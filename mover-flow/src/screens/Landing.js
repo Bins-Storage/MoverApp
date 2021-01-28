@@ -3,6 +3,7 @@ import { View} from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+// TODO extract login logic to its own component LoginHandler? so AWS integration is contained there
 export default class Landing extends React.Component {
     constructor(props) {
         super(props);
