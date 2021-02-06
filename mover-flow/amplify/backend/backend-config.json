@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "moverapp1a7894e7": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}

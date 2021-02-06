@@ -1,25 +1,18 @@
-import React from 'react';
-import { View} from 'react-native';
+import React, { useEffect } from 'react';
 
 // custom components
 import JobList from '../components/JobList';
 
-export default class SelectJobScreen extends React.Component {
-    constructor(props) {
-        super(props);
+export function SelectJobScreen(props) {
+    useEffect(
+        () => {
+            props.navigation.addListener('beforeRemove', (e) => {
+                e.preventDefault(); // prevent going back to login screen
+            });
+        }, [props.navigation]
+    );
 
-        this.state = {
-            data: [],
-        };
-    };
-
-    // for some reason, navigation prop must be explicitly passed
-    // otherwise the navigation in JobListItem is null
-    render() {
-        return (
-            <View>
-                <JobList navigation={this.props.navigation}/>
-            </View>
-        );
-    };
+    return(
+        <JobList navigation={props.navigation} />
+    );
 }
