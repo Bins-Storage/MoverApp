@@ -1,0 +1,8 @@
+credentials.json
+endpoints_tester.py
+env
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

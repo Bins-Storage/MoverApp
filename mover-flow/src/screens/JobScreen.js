@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text } from 'react-native-elements';
+import { Button, Text } from 'react-native-elements';
+import { DateTime } from 'luxon';
 
 // custom component imports
 import PickupContainer from '../components/PickupContainer';
@@ -13,6 +14,8 @@ export default class JobScreen extends React.Component {
 
         this.state = {
             userInfo: {},
+            jobStarted: false,
+            jobStartTime: null,
         };
     };
 
@@ -27,11 +30,16 @@ export default class JobScreen extends React.Component {
      * Returns a component which acts as a container for the associated Pickup/Delivery job
      */
     checkJobType = () => {
-        if (this.state.userInfo.title === 'pickup') {
-            return <PickupContainer navigation={this.props.navigation} route={this.props.route} name={this.props.route.params.name} streetAddress={this.props.route.params.streetAddress}/>
+        if (this.state.userInfo.job_type === 'Pickup' || this.state.userInfo.job_type === 'Initial Pickup') {
+            return <PickupContainer navigation={this.props.navigation} route={this.props.route} email={this.state.userInfo.email} streetAddress={this.props.route.params.streetAddress} startTime={this.state.jobStartTime}/>
         } else {
-            return <DeliveryContainer navigation={this.props.navigation}/>
+            return <DeliveryContainer navigation={this.props.navigation} startTime={this.state.jobStartTime} email={this.state.userInfo.email} streetAddress={this.state.userInfo.address}/>
         }
+    }
+
+    startJob = () => {
+        this.setState({ jobStarted: true, jobStartTime: DateTime.now().setZone('America/Los_Angeles') });
+        alert('The job has started! If this was done by mistake, please contact an administrator.');
     }
 
     /*
@@ -39,12 +47,17 @@ export default class JobScreen extends React.Component {
      * The container will re-render when scanning is done since ScannerHandler will pass a new route.params to JobScreen.
      * This has the side-effect of changing the container component's props, forcing a re-render
      */
+
+     // idea: use context to make it easier to globally store job info - like job start, end, etc.
     render() {
         return (
             <View>
-                <Text h4>Tenant: {this.state.userInfo.name}</Text>
-                <Text h4>Address: {this.state.userInfo.streetAddress}</Text>
-                {this.checkJobType()}
+                <Text h4>Tenant: {this.state.userInfo.email}</Text>
+                <Text h4>Address: {this.state.userInfo.address}</Text>
+                {this.state.jobStarted
+                    ?   this.checkJobType()
+                    :   <Button title='Start Job' onPress={this.startJob} />
+                }
             </View>
         );
     };

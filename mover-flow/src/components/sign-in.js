@@ -26,7 +26,7 @@ export function SignIn(props) {
     const [password, setPassword] = useState(null);
     const [signInError, setSignInError] = useState(null);
 
-    // might set signInError to display invalid creds message in UI
+    // side effect: might set signInError to display invalid creds message in UI
     async function signIn() {
         try {
             // make sure text input into text fields

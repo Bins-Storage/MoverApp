@@ -16,7 +16,7 @@ import AddBoxScreen from './src/screens/AddBoxScreen';
 // Amplify Imports
 import Amplify from 'aws-amplify';
 import config from './aws-exports';
-Amplify.configure(config);
+Amplify.configure(config)
 
 const Stack = createStackNavigator();
 

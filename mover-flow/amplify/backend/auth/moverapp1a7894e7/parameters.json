@@ -1,6 +1,6 @@
 {
     "identityPoolName": "moverapp1a7894e7_identitypool_1a7894e7",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "movera1a7894e7",
     "userPoolName": "moverapp1a7894e7_userpool_1a7894e7",
     "autoVerifiedAttributes": [

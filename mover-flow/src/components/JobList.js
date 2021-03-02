@@ -1,6 +1,9 @@
 import React from 'react';
-import { Button, SectionList, StyleSheet, Text } from 'react-native';
+import { Button, SectionList, StyleSheet, Text, View } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
+import {Storage } from 'aws-amplify';
+
+import url from './url';
 
 export default class JobList extends React.Component {
     constructor(props) {
@@ -31,6 +34,8 @@ export default class JobList extends React.Component {
      * 
      * @param {array} userArray An array of RandomUsers to parse
      * @return {array} Filtered RandomUser data
+     * 
+     * DEPRECATED
      */ 
     processUserArray = (userArray) => {
         let userData = [];
@@ -59,14 +64,25 @@ export default class JobList extends React.Component {
      * @param {array} userJobs A filtered array of user objects 
      * Side Effect: Sets userData in this.state
      */ 
-    sortPickupsAndDeliveries = (userJobs) => {
+    sortPickupsAndDeliveries = (userJobs, jobKeys) => {
         let pickupList = { title: 'Pickups', data: []};
         let deliveryList = { title: 'Deliveries', data: []};
-        for (let i = 0; i < userJobs.length; i++) {
+        /* for (let i = 0; i < jobKeys.length; i++) {
             if (userJobs[i].title === 'pickup') {
                 pickupList.data.push(userJobs[i]);
             } else {
                 deliveryList.data.push(userJobs[i]);
+            }
+        } */
+
+        // each jobkey will be a specific job
+        for (let i = 0; i < jobKeys.length; i++) {
+            let job_i = userJobs[jobKeys[i]];
+
+            if (job_i.job_type === 'Pickup' || job_i.job_type === 'Initial Pickup') {
+                pickupList.data.push(job_i);
+            } else {
+                deliveryList.data.push(job_i);
             }
         }
 
@@ -75,9 +91,8 @@ export default class JobList extends React.Component {
 
     // extracts 10 random users for the SectionList
     // populates state data with User, Addres, Profile Pic, Email
-    getRemoteData = () => {
-        const url = 'https://randomuser.me/api/?inc=name,location,email,phone,picture&results=10&nat=us';
-        fetch(url, {
+    getRemoteData = async () => {
+        await fetch(url + 'getjobs', {
             headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type':'application/json'
@@ -85,12 +100,19 @@ export default class JobList extends React.Component {
         })
             .then(res => res.json())
             .then(res => {
-                // store the results array
+                // get all the keys into a list
+                let jobKeys = Object.keys(res)
+
+                // sort pickups and delivieries using res (JS object of deliveries) and each key of res (stored in jobKeys)
+                this.sortPickupsAndDeliveries(res, jobKeys);
+
+
+                /*store the results array
                 let resData = res.results;
 
                 // create specific user JSON objects for each generated user
                 let processedUsers = this.processUserArray(resData);
-                this.sortPickupsAndDeliveries(processedUsers);  // SETS THE STATE!!
+                this.sortPickupsAndDeliveries(processedUsers);  // SETS THE STATE!! */
             })
             .catch(error => {
                 console.log(error);
@@ -112,8 +134,9 @@ export default class JobList extends React.Component {
         }}>
             <Avatar source={{uri: item.pictureurl}} />
             <ListItem.Content>
-                <ListItem.Title>{item.name}</ListItem.Title>
-                <ListItem.Subtitle>{item.streetAddress}</ListItem.Subtitle>
+                <ListItem.Title>{item.email}</ListItem.Title>
+                <ListItem.Title>Phone: {item.phone_num}</ListItem.Title>
+                <ListItem.Subtitle>{item.address}</ListItem.Subtitle>
             </ListItem.Content>
             <ListItem.Chevron />
         </ListItem>
@@ -127,12 +150,14 @@ export default class JobList extends React.Component {
 
     render() {
         return (
-            <SectionList
-                sections={this.state.userData}
-                renderItem={this.renderItem}
-                renderSectionHeader={this.renderSectionHeader}
-                keyExtractor={this.keyExtractor}
-            />
+            <View>
+                <SectionList
+                    sections={this.state.userData}
+                    renderItem={this.renderItem}
+                    renderSectionHeader={this.renderSectionHeader}
+                    keyExtractor={this.keyExtractor}
+                />
+            </View>
         );
     }
 }

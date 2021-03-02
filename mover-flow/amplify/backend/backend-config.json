@@ -6,5 +6,11 @@
       "dependsOn": [],
       "customAuth": false
     }
+  },
+  "storage": {
+    "tenantJobPhotos": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
   }
 }
