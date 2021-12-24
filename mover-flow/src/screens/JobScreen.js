@@ -30,10 +30,10 @@ export default class JobScreen extends React.Component {
      * Returns a component which acts as a container for the associated Pickup/Delivery job
      */
     checkJobType = () => {
-        if (this.state.userInfo.job_type === 'Pickup' || this.state.userInfo.job_type === 'Initial Pickup') {
-            return <PickupContainer navigation={this.props.navigation} route={this.props.route} email={this.state.userInfo.email} streetAddress={this.props.route.params.streetAddress} startTime={this.state.jobStartTime}/>
+        if (this.state.userInfo.jobType === 'PICKUP') {
+            return <PickupContainer navigation={this.props.navigation} orderID={this.state.userInfo.id} route={this.props.route} email={this.state.userInfo.email} streetAddress={this.props.route.params.streetAddress} startTime={this.state.jobStartTime}/>
         } else {
-            return <DeliveryContainer navigation={this.props.navigation} startTime={this.state.jobStartTime} email={this.state.userInfo.email} streetAddress={this.state.userInfo.address}/>
+            return <DeliveryContainer navigation={this.props.navigation} orderID={this.state.userInfo.id} startTime={this.state.jobStartTime} email={this.state.userInfo.email} streetAddress={this.state.userInfo.address}/>
         }
     }
 

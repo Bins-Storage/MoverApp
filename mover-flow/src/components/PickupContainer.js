@@ -2,7 +2,9 @@ import React, {Fragment} from 'react'
 import { FlatList, SafeAreaView, Text, View, StyleSheet } from 'react-native';
 import { Button, Icon, ListItem } from 'react-native-elements';
 import { DateTime } from 'luxon';
-import { Storage } from 'aws-amplify';
+import { Storage, API } from 'aws-amplify';
+
+import { updateOrder } from '../graphql/mutations';
 
 import url from './url';
 
@@ -26,7 +28,7 @@ export default class PickupContainer extends React.Component {
             let newBoxList = [];
             let newCode = this.props.route.params.data; // extract the new box code from the route.params
             let imageUri = this.props.route.params.imageUri;    // extract the image uri from route.params
-
+            console.log(newCode);
             this.uploadImage(imageUri, newCode)
             // finish by updating the state with a now nonempty boxlist!
             let newBox = {'id': newCode, 'uri': `${this.props.email}_${newCode}`};
@@ -88,7 +90,22 @@ export default class PickupContainer extends React.Component {
         this.props.navigation.navigate('Add a Box');
     }
 
+    finishJob = async () => {
+
+        if (this.state.boxList.length === 0) {
+            alert('Warning: No boxes added yet!');
+            return;
+        }
+
+        const orderDetail = {id: this.props.orderID, status: "COMPLETED"}
+        await API.graphql({query: updateOrder, variables: {input: orderDetail}});
+
+        this.props.navigation.pop();
+    }
+
+
     // to send box data to google sheet
+    /*
     finishJob = async () => {
 
         if (this.state.boxList.length === 0) {
@@ -116,7 +133,7 @@ export default class PickupContainer extends React.Component {
 
         this.props.navigation.pop();
     }
-
+    */
     keyExtractor = (item, index) => index.toString();
 
     render() {
@@ -132,7 +149,7 @@ export default class PickupContainer extends React.Component {
                             style={styles.NoBoxText}
                         />
                 }
-                <View style={{marginVertical: 30}} />                  
+                <View style={{marginVertical: 30}} />           
                 <Button title='Add Box' onPress={this.addBox} />
                 <View style={{marginVertical: 10}} />                   
                 <Button title='Finish Job' onPress={this.finishJob} />   
