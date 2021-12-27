@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, SectionList, StyleSheet, Text, View } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
-import {Storage } from 'aws-amplify';
+import { API } from 'aws-amplify';
+import * as queries from '../../src/graphql/queries';
+
 
 import url from './url';
 
@@ -17,7 +19,7 @@ export default class JobList extends React.Component {
 
     // pull randomly generated data from the RandomUserAPI to populate the JobList
     componentDidMount() {
-        this.getRemoteData();
+        this.getData();
     }
 
     // helper func: randomly decides if a job is pickup
@@ -79,7 +81,7 @@ export default class JobList extends React.Component {
         for (let i = 0; i < jobKeys.length; i++) {
             let job_i = userJobs[jobKeys[i]];
 
-            if (job_i.job_type === 'Pickup' || job_i.job_type === 'Initial Pickup') {
+            if (job_i.jobType === 'PICKUP') {
                 pickupList.data.push(job_i);
             } else {
                 deliveryList.data.push(job_i);
@@ -119,6 +121,16 @@ export default class JobList extends React.Component {
             })
     }
 
+    // NEW Getting data from Amplify 
+
+    getData = async () => {
+        const ordersList = await API.graphql({query: queries.listOrders})
+        const data = ordersList.data.listOrders.items
+        let jobKeys = Object.keys(data)
+        this.sortPickupsAndDeliveries(data, jobKeys);
+    }
+
+
     keyExtractor = (item, index) => index.toString();
 
     /*
@@ -134,8 +146,7 @@ export default class JobList extends React.Component {
         }}>
             <Avatar source={{uri: item.pictureurl}} />
             <ListItem.Content>
-                <ListItem.Title>{item.email}</ListItem.Title>
-                <ListItem.Title>Phone: {item.phone_num}</ListItem.Title>
+                <ListItem.Title>{item.tenantID}</ListItem.Title>
                 <ListItem.Subtitle>{item.address}</ListItem.Subtitle>
             </ListItem.Content>
             <ListItem.Chevron />

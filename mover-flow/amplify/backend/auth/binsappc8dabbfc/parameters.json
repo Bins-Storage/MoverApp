@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "moverapp1a7894e7_identitypool_1a7894e7",
-    "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "movera1a7894e7",
-    "userPoolName": "moverapp1a7894e7_userpool_1a7894e7",
+    "identityPoolName": "binsappc8dabbfc_identitypool_c8dabbfc",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "binsapc8dabbfc",
+    "userPoolName": "binsappc8dabbfc_userpool_c8dabbfc",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -20,7 +20,7 @@
     "requiredAttributes": [
         "email"
     ],
-    "userpoolClientGenerateSecret": true,
+    "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
         "email"
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "movera1a7894e7_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "binsapc8dabbfc_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "1a7894e7",
-    "resourceName": "moverapp1a7894e7",
+    "sharedId": "c8dabbfc",
+    "resourceName": "binsappc8dabbfc",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -51,6 +51,5 @@
     ],
     "userPoolGroupList": [],
     "serviceName": "Cognito",
-    "usernameCaseSensitive": false,
     "dependsOn": []
 }

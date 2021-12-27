@@ -1,0 +1,110 @@
+type Facility @model {
+  id: ID!
+  name: String
+  address: String
+  boxes: [Box] @connection(keyName: "itemsByFacility", fields: ["id"])
+  customers: [Tenant] @connection(keyName: "tenantsByFacility", fields: ["id"])
+  orders: [Order] @connection(keyName: "ordersbyFacility", fields: ["id"])
+  units: [Unit] @connection(keyName: "unitsByFacility", fields: ["id"])
+  drivers: [Driver] @connection(keyName: "driversByFacility", fields: ["id"])
+}
+
+type Unit @model
+  @key(name: "unitsByFacility", fields: ["facilityID"], queryField: "unitsByFacility") {
+  id: ID!
+  facilityID: ID!
+  size: String
+  usage: String
+  price: String
+  tenantID: ID
+  tenant: [Tenant] @connection(keyName: "tenantsByUnit", fields: ["tenantID"])
+  boxes: [Box] @connection(keyName: "itemsByUnit", fields: ["id"])
+}
+
+type Admin @model {
+  id: ID!
+  name: String
+  facility: [Facility] @connection
+}  
+
+type Tenant @model
+  @key(name: "tenantsByUnit", fields: ["unitID"], queryField: "tenantByUnit")
+  @key(name: "tenantByEmail", fields: ["email"], queryField: "tenantByEmail")
+  @key(name: "tenantsByFacility", fields: ["facilityID"], queryField: "tenantsByFacility") {
+  id: ID!
+  facilityID: ID
+  name: String
+  email: String!
+  phone: String
+  unitID: ID
+  address: Address
+  licenseNumber: String
+  licenseState: String
+  orders: [Order] @connection(keyName: "ordersByTenant", fields: ["id"])
+  boxes: [Box] @connection(keyName: "boxesByTenant", fields: ["id"])
+}
+
+type Driver @model
+  @key(name: "driversByFacility", fields: ["facilityID"], queryField: "driversByFacility") {
+  id: ID!
+  facilityID: ID
+  name: String
+}
+
+type Box @model 
+  @key(name: "boxesByTenant", fields: ["tenantID"], queryField: "boxesByTenant")
+  @key(name: "itemsByFacility", fields: ["facilityID"], queryField: "boxesByFacility")
+  @key(name: "itemsByUnit", fields: ["unitID"], queryField: "boxesByUnit") {
+  id: ID!
+  tenantID: ID!
+  facilityID: ID!
+  unitID: ID
+  description: String
+  status: BoxStatus
+  photo: String # map to the s3 url
+  location: String
+}
+
+type Order @model
+  @key(name: "ordersByTenant", fields: ["tenantID"], queryField: "ordersByTenant")
+  @key(name: "ordersbyFacility", fields: ["facilityID"], queryField: "ordersbyFacility"){  
+  id: ID!
+  tenantID: ID!
+  facilityID: ID!
+  date: String
+  time: String
+  address: String
+  jobType: JobType
+  status: Status
+  driver: String
+}
+
+type Address {
+ tenantID: ID
+ addressLine1: String
+ addressLine2: String
+ city: String
+ state: String
+ zip: String
+ specialInstructions: String
+ building: String
+ parking: String
+}
+
+enum BoxStatus {
+  IN_STORAGE
+  RETURNED
+  TO_PICKUP
+  TO_DELIVER
+}
+
+enum JobType {
+  PICKUP
+  DELIVERY
+}
+
+enum Status {
+  COMPLETED
+  INCOMPLETE
+  PENDING
+}
